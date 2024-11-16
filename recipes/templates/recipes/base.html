@@ -131,15 +131,19 @@
                       <a href="{% url 'recipes:recipe_list' %}">Home</a>
                     </li>
                     <li><a href="{% url 'recipes:blog_list' %}">Blog Post</a></li>
-                    <li><a href="{% url 'recipes:recipes_list' %}">Recipe Post</a></li>
                     <li><a href="{% url 'recipes:about' %}">About Us</a></li>
                     <li>
                       <a href="#">Account</a>
                       <ul class="dropdown">
                         {% if user.is_authenticated %}
-                        <li>
-                          <a href="{% url 'account_logout' %}">Logout</a>
-                        </li>
+                        <li><a href="{% url 'recipes:dashboard' %}">Dashboard</a></li>
+                        <li><a href="{% url 'recipes:my_recipes' %}">My Recipes</a></li>
+                        <li><a href="{% url 'recipes:profile_detail' user.username %}">My Profile</a></li>
+                        <li><a href="{% url 'recipes:profile_edit' %}">Edit Profile</a></li>
+                        {% if user.is_staff %}
+                        <li><a href="{% url 'recipes:category_list' %}">Manage Categories</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'account_logout' %}">Logout</a></li>
                         {% else %}
                         <li>
                           <a href="{% url 'account_login' %}">Login</a>
@@ -246,14 +250,12 @@
       </div>
     </div>
     <!-- ##### Follow Us Instagram Area End ##### -->
-    
+
     <!-- ##### Footer Area Start ##### -->
     <footer class="footer-area">
       <div class="container h-100">
         <div class="row h-100">
-          <div
-            class="col-12 h-100 d-flex flex-wrap align-items-center justify-content-between"
-          >
+          <div class="col-12 h-100 d-flex flex-wrap align-items-center justify-content-between">
             <!-- Footer Social Info -->
             <div class="footer-social-info text-right">
               <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
@@ -286,7 +288,7 @@
       </div>
     </footer>
     <!-- ##### Footer Area Start ##### -->
-    
+
     <!-- ##### All Javascript Files ##### -->
     {% block extra_js %}{% endblock extra_js %}
     <!-- jQuery-2.2.4 js -->

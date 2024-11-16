@@ -1,0 +1,230 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>Welcome, {{ user.get_full_name|default:user.username }}!</h1>
+            <p class="lead text-muted">Manage your recipes and see your activity</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-utensils fa-2x text-primary mb-3"></i>
+                    <h3 class="card-title">{{ stats.total_recipes }}</h3>
+                    <p class="card-text text-muted">Total Recipes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                    <h3 class="card-title">{{ stats.published_recipes }}</h3>
+                    <p class="card-text text-muted">Published Recipes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-heart fa-2x text-danger mb-3"></i>
+                    <h3 class="card-title">{{ stats.total_favorites }}</h3>
+                    <p class="card-text text-muted">Recipe Favorites</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-star fa-2x text-warning mb-3"></i>
+                    <h3 class="card-title">{{ stats.average_rating|floatformat:1 }}</h3>
+                    <p class="card-text text-muted">Average Rating</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <!-- Recent Recipes -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Recipes</h5>
+                    <a href="{% url 'recipes:my_recipes' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for recipe in recipes %}
+                            <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ recipe.title }}</h6>
+                                    <small class="text-muted">{{ recipe.created_at|date:"M j" }}</small>
+                                </div>
+                                <p class="mb-1 text-muted small">{{ recipe.description|truncatewords:10 }}</p>
+                                <small>
+                                    {% if recipe.is_published %}
+                                        <span class="badge badge-success">Published</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">Draft</span>
+                                    {% endif %}
+                                </small>
+                            </a>
+                        {% empty %}
+                            <p class="text-muted text-center my-3">No recipes yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Favorites -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Favorites</h5>
+                    <a href="{% url 'recipes:favorite_recipes' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for recipe in favorite_recipes %}
+                            <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ recipe.title }}</h6>
+                                    <small class="text-muted">{{ recipe.created_at|date:"M j" }}</small>
+                                </div>
+                                <p class="mb-1 text-muted small">By {{ recipe.author.username }}</p>
+                                <small class="text-warning">
+                                    {% with rating=recipe.average_rating %}
+                                        {% for i in "12345"|make_list %}
+                                            {% if forloop.counter <= rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endwith %}
+                                </small>
+                            </a>
+                        {% empty %}
+                            <p class="text-muted text-center my-3">No favorites yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Comments -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent Comments</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for comment in recent_comments %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">
+                                        <a href="{% url 'recipes:recipe_detail' comment.recipe.slug %}" class="text-decoration-none">
+                                            {{ comment.recipe.title }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">{{ comment.created_at|date:"M j" }}</small>
+                                </div>
+                                <p class="mb-1 small">{{ comment.message|truncatewords:15 }}</p>
+                                <small class="text-muted">By {{ comment.user.username }}</small>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted text-center my-3">No comments yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Ratings -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Recent Ratings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for rating in recent_ratings %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">
+                                        <a href="{% url 'recipes:recipe_detail' rating.recipe.slug %}" class="text-decoration-none">
+                                            {{ rating.recipe.title }}
+                                        </a>
+                                    </h6>
+                                    <small class="text-muted">{{ rating.created_at|date:"M j" }}</small>
+                                </div>
+                                <p class="mb-1">
+                                    <span class="text-warning">
+                                        {% for i in "12345"|make_list %}
+                                            {% if forloop.counter <= rating.rating %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </p>
+                                <small class="text-muted">By {{ rating.user.username }}</small>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted text-center my-3">No ratings yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'recipes:recipe_create' %}" class="btn btn-primary btn-block">
+                                <i class="fas fa-plus"></i> Create Recipe
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'recipes:profile_edit' %}" class="btn btn-outline-primary btn-block">
+                                <i class="fas fa-user-edit"></i> Edit Profile
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'recipes:my_recipes' %}" class="btn btn-outline-primary btn-block">
+                                <i class="fas fa-list"></i> My Recipes
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="{% url 'recipes:favorite_recipes' %}" class="btn btn-outline-primary btn-block">
+                                <i class="fas fa-heart"></i> My Favorites
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

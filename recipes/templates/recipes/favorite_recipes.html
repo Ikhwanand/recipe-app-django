@@ -1,0 +1,104 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+
+{% block title %}My Favorite Recipes{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>My Favorite Recipes</h1>
+            <p class="lead text-muted">Your collection of favorite recipes</p>
+        </div>
+    </div>
+
+    {% if favorites %}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ favorites|length }}</h3>
+                    <p class="text-muted mb-0">Total Favorites</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ highest_rating|floatformat:1 }}</h3>
+                    <p class="text-muted mb-0">Highest Rating</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ favorites.0.created_at|date:"M j, Y"|default:"N/A" }}</h3>
+                    <p class="text-muted mb-0">Latest Addition</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        {% for favorite in favorites %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if favorite.recipe.image %}
+                        <img src="{{ favorite.recipe.image.url }}" class="card-img-top" alt="{{ favorite.recipe.title }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-utensils fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'recipes:recipe_detail' favorite.recipe.slug %}" class="text-decoration-none">
+                                {{ favorite.recipe.title }}
+                            </a>
+                        </h5>
+                        <p class="card-text text-muted">
+                            <small>
+                                By {{ favorite.recipe.author.username }} | 
+                                Favorited on {{ favorite.created_at|date:"F j, Y" }}
+                            </small>
+                        </p>
+                        <p class="card-text">{{ favorite.recipe.description|truncatewords:20 }}</p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge badge-primary">{{ favorite.recipe.get_difficulty_display }}</span>
+                                {% if favorite.recipe.category %}
+                                    <span class="badge badge-secondary">{{ favorite.recipe.category.name }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-warning">
+                                {% if favorite.recipe.average_rating %}
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= favorite.recipe.average_rating %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">No ratings</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> You haven't favorited any recipes yet.
+                    <a href="{% url 'recipes:recipe_list' %}" class="alert-link">Browse recipes</a> to add some to your favorites!
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

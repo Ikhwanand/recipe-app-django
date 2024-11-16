@@ -1,0 +1,156 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Edit Profile</h2>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Personal Information -->
+                        <div class="mb-4">
+                            <h5>Personal Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.first_name.label_tag }}
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.first_name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    {{ form.last_name.label_tag }}
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.last_name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.bio.label_tag }}
+                                {{ form.bio }}
+                                {% if form.bio.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.bio.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.location.label_tag }}
+                                {{ form.location }}
+                                {% if form.location.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.location.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Profile Picture -->
+                        <div class="mb-4">
+                            <h5>Profile Picture</h5>
+                            {% if user.profile.avatar %}
+                                <div class="mb-3">
+                                    <img src="{{ user.profile.avatar.url }}" alt="Current avatar" class="img-thumbnail" style="max-width: 150px;">
+                                </div>
+                            {% endif %}
+                            <div class="mb-3">
+                                {{ form.avatar.label_tag }}
+                                {{ form.avatar }}
+                                {% if form.avatar.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.avatar.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Social Media Links -->
+                        <div class="mb-4">
+                            <h5>Social Media Links</h5>
+                            <div class="mb-3">
+                                {{ form.website.label_tag }}
+                                {{ form.website }}
+                                {% if form.website.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.website.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.facebook.label_tag }}
+                                {{ form.facebook }}
+                                {% if form.facebook.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.facebook.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.twitter.label_tag }}
+                                {{ form.twitter }}
+                                {% if form.twitter.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.twitter.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.instagram.label_tag }}
+                                {{ form.instagram }}
+                                {% if form.instagram.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.instagram.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Preferences -->
+                        <div class="mb-4">
+                            <h5>Preferences</h5>
+                            <div class="form-check mb-2">
+                                {{ form.email_notifications }}
+                                {{ form.email_notifications.label_tag }}
+                            </div>
+                            <div class="form-check mb-2">
+                                {{ form.public_profile }}
+                                {{ form.public_profile.label_tag }}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                Save Changes
+                            </button>
+                            <a href="{% url 'recipes:profile_detail' username=user.username %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

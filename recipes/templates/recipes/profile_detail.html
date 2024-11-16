@@ -1,0 +1,229 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+
+{% block title %}{{ profile_user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Profile Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Profile Picture -->
+                        <div class="col-md-3 text-center">
+                            {% if profile_user.profile.avatar %}
+                                <img src="{{ profile_user.profile.avatar.url }}" alt="{{ profile_user.username }}'s avatar" 
+                                     class="img-fluid rounded-circle mb-3" style="max-width: 200px;">
+                            {% else %}
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                                     style="width: 200px; height: 200px;">
+                                    <i class="fas fa-user fa-4x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            {% if request.user == profile_user %}
+                                <a href="{% url 'recipes:profile_edit' %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-edit"></i> Edit Profile
+                                </a>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Profile Info -->
+                        <div class="col-md-9">
+                            <h2 class="mb-3">
+                                {{ profile_user.get_full_name|default:profile_user.username }}
+                                {% if not profile_user.profile.public_profile %}
+                                    <small><i class="fas fa-lock text-muted" title="Private Profile"></i></small>
+                                {% endif %}
+                            </h2>
+                            {% if profile_user.profile.location %}
+                                <p class="text-muted mb-2">
+                                    <i class="fas fa-map-marker-alt"></i> {{ profile_user.profile.location }}
+                                </p>
+                            {% endif %}
+                            {% if profile_user.profile.bio %}
+                                <p class="mb-3">{{ profile_user.profile.bio }}</p>
+                            {% endif %}
+                            
+                            <!-- Social Links -->
+                            <div class="mb-3">
+                                {% if profile_user.profile.website %}
+                                    <a href="{{ profile_user.profile.website }}" class="btn btn-outline-secondary btn-sm me-2" target="_blank">
+                                        <i class="fas fa-globe"></i> Website
+                                    </a>
+                                {% endif %}
+                                {% if profile_user.profile.facebook %}
+                                    <a href="{{ profile_user.profile.facebook }}" class="btn btn-outline-primary btn-sm me-2" target="_blank">
+                                        <i class="fab fa-facebook"></i> Facebook
+                                    </a>
+                                {% endif %}
+                                {% if profile_user.profile.twitter %}
+                                    <a href="{{ profile_user.profile.twitter }}" class="btn btn-outline-info btn-sm me-2" target="_blank">
+                                        <i class="fab fa-twitter"></i> Twitter
+                                    </a>
+                                {% endif %}
+                                {% if profile_user.profile.instagram %}
+                                    <a href="{{ profile_user.profile.instagram }}" class="btn btn-outline-danger btn-sm" target="_blank">
+                                        <i class="fab fa-instagram"></i> Instagram
+                                    </a>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Stats -->
+                            <div class="row">
+                                <div class="col-md-3 col-6">
+                                    <div class="text-center mb-3">
+                                        <h4 class="mb-0">{{ profile_user.recipes.count }}</h4>
+                                        <small class="text-muted">Recipes</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="text-center mb-3">
+                                        <h4 class="mb-0">{{ profile_user.favorite_recipes.count }}</h4>
+                                        <small class="text-muted">Favorites</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="text-center mb-3">
+                                        <h4 class="mb-0">{{ profile_user.profile.average_recipe_rating|floatformat:1 }}</h4>
+                                        <small class="text-muted">Avg Rating</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6">
+                                    <div class="text-center mb-3">
+                                        <h4 class="mb-0">{{ profile_user.date_joined|date:"M Y" }}</h4>
+                                        <small class="text-muted">Joined</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipes Section -->
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs mb-4">
+                <li class="nav-item">
+                    <a class="nav-link active" id="recipes-tab" data-toggle="tab" href="#recipes">
+                        <i class="fas fa-utensils"></i> Recipes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="favorites-tab" data-toggle="tab" href="#favorites">
+                        <i class="fas fa-heart"></i> Favorites
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <!-- Recipes Tab -->
+                <div class="tab-pane fade show active" id="recipes">
+                    <div class="row">
+                        {% for recipe in recipes %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    {% if recipe.image %}
+                                        <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}" 
+                                             style="height: 200px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                             style="height: 200px;">
+                                            <i class="fas fa-utensils fa-3x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="text-decoration-none">
+                                                {{ recipe.title }}
+                                            </a>
+                                        </h5>
+                                        <p class="card-text">{{ recipe.description|truncatewords:20 }}</p>
+                                    </div>
+                                    <div class="card-footer bg-white">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">{{ recipe.created_at|date:"M j, Y" }}</small>
+                                            <div class="text-warning">
+                                                {% with rating=recipe.average_rating %}
+                                                    {% for i in "12345"|make_list %}
+                                                        {% if forloop.counter <= rating %}
+                                                            <i class="fas fa-star"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    No recipes found.
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Favorites Tab -->
+                <div class="tab-pane fade" id="favorites">
+                    <div class="row">
+                        {% for recipe in favorite_recipes %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    {% if recipe.image %}
+                                        <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}" 
+                                             style="height: 200px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                             style="height: 200px;">
+                                            <i class="fas fa-utensils fa-3x text-muted"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="text-decoration-none">
+                                                {{ recipe.title }}
+                                            </a>
+                                        </h5>
+                                        <p class="card-text">{{ recipe.description|truncatewords:20 }}</p>
+                                    </div>
+                                    <div class="card-footer bg-white">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">By {{ recipe.author.username }}</small>
+                                            <div class="text-warning">
+                                                {% with rating=recipe.average_rating %}
+                                                    {% for i in "12345"|make_list %}
+                                                        {% if forloop.counter <= rating %}
+                                                            <i class="fas fa-star"></i>
+                                                        {% else %}
+                                                            <i class="far fa-star"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    No favorite recipes found.
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

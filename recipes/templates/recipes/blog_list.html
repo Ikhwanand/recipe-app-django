@@ -1,10 +1,9 @@
 {% extends "recipes/base.html" %}
 {% load static %}
 
-{% block title %}Blog Post{% endblock title %}
+{% block title %}Blog Posts{% endblock %}
 
 {% block content %}
-
 <!-- ##### Breadcumb Area Start ##### -->
 <div class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/breadcumb2.jpg' %});">
     <div class="container h-100">
@@ -25,13 +24,18 @@
         <div class="row">
             <div class="col-12 col-lg-8">
                 <div class="blog-posts-area">
-
                     {% for blog in blog_posts %}
                     <!-- Single Blog Area -->
                     <div class="single-blog-area mb-80">
                         <!-- Thumbnail -->
                         <div class="blog-thumbnail">
-                            <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                            {% if blog.image %}
+                                <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                            {% else %}
+                                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
                             <!-- Post Date -->
                             <div class="post-date">
                                 <a href="#"><span>{{ blog.created_at|date:"d" }}</span>{{ blog.created_at|date:"M" }} <br> {{ blog.created_at|date:"Y" }}</a>
@@ -41,103 +45,104 @@
                         <div class="blog-content">
                             <a href="{% url 'recipes:blog_detail' blog.pk %}" class="post-title">{{ blog.title }}</a>
                             <div class="meta-data">
-                                <p> by: {{ blog.author }}</p>
+                                <p>by {{ blog.author.get_full_name|default:blog.author.username }}
+                                {% if blog.category %}
+                                    | <span class="badge badge-secondary">{{ blog.category.name }}</span>
+                                {% endif %}
+                                </p>
                             </div>
-                            <p class='text-truncate'>{{ blog.content }}</p>
+                            <p>{{ blog.content|truncatewords:50 }}</p>
                             <a href="{% url 'recipes:blog_detail' blog.pk %}" class="btn delicious-btn mt-30">Read More</a>
                         </div>
                     </div>
+                    {% empty %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No blog posts found.
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'recipes:blog_create' %}" class="alert-link">Create the first blog post</a>
+                        {% endif %}
+                    </div>
                     {% endfor %}
 
-
-                </div>
-
-                <nav aria-label="Page navigation example">
+                    <!-- Pagination -->
                     {% if blog_posts.has_other_pages %}
-                    <ul class="pagination">
-                        {% if blog_posts.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?page={{ blog_posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Previous</a></li>
-                        {% else %}
-                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-                        {% endif %}
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            {% if blog_posts.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ blog_posts.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}">Previous</a>
+                                </li>
+                            {% endif %}
 
-                        {% for i in blog_posts.paginator.page_range %}
-                        {% if blog_posts.number == i %}
-                        <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a></li>
-                        {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">{{ i }}</a></li>
-                        {% endif %}
-                        {% endfor %}
+                            {% for num in blog_posts.paginator.page_range %}
+                                <li class="page-item {% if blog_posts.number == num %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ num }}{% if current_category %}&category={{ current_category }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endfor %}
 
-                        {% if blog_posts.has_next %}
-                        <li class="page-item"><a class="page-link" href="?page={{ blog_posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Next</a></li>
-                        {% else %}
-                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-                        {% endif %}
-                    </ul>
+                            {% if blog_posts.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ blog_posts.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}">Next</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                     {% endif %}
-                </nav>
+                </div>
             </div>
 
             <div class="col-12 col-lg-4">
                 <div class="blog-sidebar-area">
                     
                     {% if user.is_authenticated %}
-                    <!-- Widget -->
+                    <!-- Create Post Widget -->
                     <div class="single-widget mb-80">
-                        <h6>Blog</h6>
-                        <button type="button" class="btn delicious-btn">
-                            <a href="{% url 'recipes:blog_create' %}" style='color:white;'>Create Blog</a>
-                        </button>
+                        <h6>Blog Actions</h6>
+                        <a href="{% url 'recipes:blog_create' %}" class="btn delicious-btn w-100">
+                            <i class="fas fa-plus"></i> Create New Post
+                        </a>
                     </div>
                     {% endif %}
 
-                    <!-- Widget -->
-                    {% if categories %}
+                    <!-- Categories Widget -->
                     <div class="single-widget mb-80">
                         <h6>Categories</h6>
-                        <ul class='list'>
-                            <li><a href="{% url 'recipes:blog_list' %}">All Categories</a></li>
-                            {% for category in categories %}
-                            <li><a href="?category={{ category.pk }}">{{ category.name }}</a></li>
+                        <ul class="list-group">
+                            <li class="list-group-item {% if not current_category %}active{% endif %}">
+                                <a href="{% url 'recipes:blog_list' %}" class="{% if not current_category %}text-white{% endif %}">
+                                    All Categories
+                                </a>
+                            </li>
+                            {% for category in blog_categories %}
+                            <li class="list-group-item {% if current_category == category.id|stringformat:'i' %}active{% endif %}">
+                                <a href="?category={{ category.id }}" class="{% if current_category == category.id|stringformat:'i' %}text-white{% endif %}">
+                                    {{ category.name }}
+                                </a>
+                            </li>
                             {% endfor %}
                         </ul>
                     </div>
-                    {% endif %}
 
-                    <!-- Widget -->
+                    <!-- Newsletter Widget -->
                     <div class="single-widget mb-80">
-                        <h6>Newsletter</h6>
 
-                        <!-- Form -->
-                        <div class="newsletter-form bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/bg1.jpg' %});">
-                            <form action="{% url 'recipes:blog_list' %}" method="post">
-                                {% csrf_token %}
-                                <input type="email" name="email" placeholder="Subscribe to newsletter">
-                                <button type="submit" class="btn delicious-btn w-100">Subscribe</button>
-                            </form>
-                            <p>Delicious is a website that provides a variety of food recipes. You can search, create and share your own recipes with others. Explore new recipes and enjoy cooking!</p>
-                        </div>
-                    </div>
-
-                    <!-- Widget -->
-                    <div class="single-widget mb-80">
-                        <div class="quote-area text-center">
-                            <span>"</span>
-                            <h4>Nothing is better than going home to family and eating good food and relaxing</h4>
-                            <p>John Smith</p>
-                            <div class="date-comments d-flex justify-content-between">
-                                <div class="date">January 04, 2018</div>
-                                <div class="comments">2 Comments</div>
+                        <div class="newsletter-area">
+                            <h4>Subscribe to our newsletter</h4>
+                            <!-- Form -->
+                            <div class="newsletter-form bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/bg1.jpg' %});">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="email" name="email" placeholder="Subscribe to newsletter">
+                                    <button type="submit" class="btn delicious-btn w-100">Subscribe</button>
+                                </form>
+                                <p>Subscribe to our newsletter to get the latest news and offers.</p>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
     </div>
 </div>
 <!-- ##### Blog Area End ##### -->
-{% endblock content %}
-
+{% endblock %}

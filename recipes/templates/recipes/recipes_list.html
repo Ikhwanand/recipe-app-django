@@ -17,11 +17,9 @@
 <!-- ##### Breadcumb Area End ##### -->
 
 <div class="receipe-post-area section-padding-80">
-
-  <!-- Receipe Post Search -->
   <div class="receipe-post-search mb-80">
       <div class="container">
-          <form action="{% url 'recipes:recipes_list' %}" method="get">
+          <form action="{% url 'recipes:recipe_list' %}" method="get">
               <div class="row align-items-end">
                   <div class="col-12 col-md-4 col-lg-3 mb-3 mb-md-0">
                       <select name="category" id="select1" class="form-control">
@@ -46,16 +44,14 @@
           </form>
       </div>
   </div>
-
 </div>
-
 
 <!--<div class="receipe-post-area section-padding-80">
 
     
     <div class="receipe-post-search mb-80">
         <div class="container">
-            <form action="{% url 'recipes:recipes_list' %}" method="get">
+            <form action="{% url 'recipes:recipe_list' %}" method="get">
                 <div class="row">
                     <div class="col-12 col-lg-3">
                         <select name="category" id="select1">
@@ -81,7 +77,6 @@
 
 </div>-->
 
-<!-- ##### Best Receipe Area Start ##### -->
 <section class="best-receipe-area">
     <div class="container">
       <div class="row">
@@ -91,7 +86,6 @@
           </div>
         </div>
       </div>
-  
       <div class="row">
         {% if not query %}
         {% for recipe in recipes %}
@@ -116,30 +110,6 @@
         </div>
         {% endfor %}
         {% elif query %}
-        {% for recipe in recipes %}
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="single-best-receipe-area mb-30">
-            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" />
-            <div class="receipe-content">
-              <a href="{% url 'recipes:recipe_detail' recipe.pk %}">
-                <h5>{{ recipe.title }}</h5>
-              </a>
-              <div class="ratings">
-                {% for i in "12345" %} 
-                {% if forloop.counter <= recipe.average_rating %}
-                <i class="fa fa-star" aria-hidden="true"></i>
-                {% else %}
-                <i class="fa fa-star-o" aria-hidden="true"></i>
-                {% endif %} 
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-        {% endif %}
-
-        {% if query_search %}
         {% for recipe in recipes_search %}
         <div class="col-12 col-sm-6 col-lg-4">
           <div class="single-best-receipe-area mb-30">
@@ -181,7 +151,6 @@
         {% endif %}
     </span>
 </div>-->
-
 <div class="container my-2">
   <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">

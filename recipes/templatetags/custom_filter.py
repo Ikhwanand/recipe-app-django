@@ -9,3 +9,10 @@ def get_range(value):
 @register.filter
 def enumerated(iterable):
     return enumerate(iterable)
+
+@register.filter
+def multiply(value, arg):
+    try:
+        return float(value) * float(arg)
+    except (ValueError, TypeError):
+        return 0

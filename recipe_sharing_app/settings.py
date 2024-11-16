@@ -74,9 +74,16 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
-ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
 
+# Rate limiting settings
+ACCOUNT_RATE_LIMITS = {
+    # 5 failed login attempts within 5 minutes
+    "login_failed": "5/5m",
+    # 3 emails within 1 minute
+    "email": "3/1m",
+    # 3 password reset attempts within 1 minute
+    "password_reset": "3/1m",
+}
 
 LOGIN_REDIRECT_URL = '/'
 

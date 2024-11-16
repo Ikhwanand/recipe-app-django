@@ -1,16 +1,167 @@
 {% extends "recipes/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="text-center">{% if form.instance.pk %}Update{% else %}Create{% endif %} Recipe</h1>
-            <form method='POST' enctype='multipart/form-data' class="form-group">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class='btn btn-primary btn-block my-2'>Save</button>
-            </form>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">{{ title }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <label for="{{ form.title.id_for_label }}">Title</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback d-block">{{ form.title.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">{{ form.description.errors|join:", " }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Brief description of your recipe</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.prep_time.id_for_label }}">Prep Time (minutes)</label>
+                                    {{ form.prep_time }}
+                                    {% if form.prep_time.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.prep_time.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.cook_time.id_for_label }}">Cook Time (minutes)</label>
+                                    {{ form.cook_time }}
+                                    {% if form.cook_time.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.cook_time.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.servings.id_for_label }}">Servings</label>
+                                    {{ form.servings }}
+                                    {% if form.servings.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.servings.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.ingredients.id_for_label }}">Ingredients</label>
+                            {{ form.ingredients }}
+                            {% if form.ingredients.errors %}
+                                <div class="invalid-feedback d-block">{{ form.ingredients.errors|join:", " }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">{{ form.ingredients.help_text }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.instructions.id_for_label }}">Instructions</label>
+                            {{ form.instructions }}
+                            {% if form.instructions.errors %}
+                                <div class="invalid-feedback d-block">{{ form.instructions.errors|join:", " }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">{{ form.instructions.help_text }}</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.category.id_for_label }}">Category</label>
+                                    {{ form.category }}
+                                    {% if form.category.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.category.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.difficulty.id_for_label }}">Difficulty</label>
+                                    {{ form.difficulty }}
+                                    {% if form.difficulty.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.difficulty.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.image.id_for_label }}">Image</label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="invalid-feedback d-block">{{ form.image.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                {{ form.is_published }}
+                                <label class="custom-control-label" for="{{ form.is_published.id_for_label }}">
+                                    Publish Recipe
+                                </label>
+                            </div>
+                            {% if form.is_published.errors %}
+                                <div class="invalid-feedback d-block">{{ form.is_published.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-primary">Save Recipe</button>
+                            <a href="{% url 'recipes:recipe_list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-{% endblock content %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Preview image before upload
+    document.getElementById('{{ form.image.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.createElement('img');
+                preview.src = e.target.result;
+                preview.style.maxWidth = '200px';
+                preview.style.marginTop = '10px';
+                const container = document.getElementById('{{ form.image.id_for_label }}').parentNode;
+                const oldPreview = container.querySelector('img');
+                if (oldPreview) {
+                    container.removeChild(oldPreview);
+                }
+                container.appendChild(preview);
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}
