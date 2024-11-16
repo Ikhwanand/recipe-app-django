@@ -1,0 +1,303 @@
+{% load static %} 
+{% load navbar_tags %}
+{% load custom_filter %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  
+    
+    <link rel="icon" href="{% static 'img/core-img/favicon.ico' %}" />
+
+    <title>{% block title %}Delicious - Food Recipes{% endblock title %}</title>
+  </head>
+  <body>
+    <!-- Preloader -->
+    <div id="preloader">
+      <i class="circle-preloader"></i>
+      <img src="{% static 'img/core-img/salad.png' %}" alt="" />
+    </div>
+
+    <!-- Search Wrapper -->
+    <div class="search-wrapper">
+      <!-- Close Btn -->
+      <div class="close-btn">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <form action="{% url 'recipes:search_recipes' %}" method="get">
+              <input
+                type="search"
+                name="q"
+                placeholder="Type any keywords..."
+              />
+              <button type="submit">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ##### Header Area Start ##### -->
+    <header class="header-area">
+      <!-- Top Header Area -->
+      <div class="top-header-area">
+        <div class="container h-100">
+          <div class="row h-100 align-items-center justify-content-between">
+            <!-- Breaking News -->
+            <div class="col-12 col-sm-6">
+              <div class="breaking-news">
+                <div id="breakingNewsTicker" class="ticker">
+                  <ul>
+                    <li><a href="#">Hello World!</a></li>
+                    <li><a href="#">Welcome to Colorlib Family.</a></li>
+                    <li><a href="#">Hello Delicious!</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Social Info -->
+            <div class="col-12 col-sm-6">
+              <div class="top-social-info text-right">
+                <a href="#"
+                  ><i class="fa fa-pinterest" aria-hidden="true"></i
+                ></a>
+                <a href="#"
+                  ><i class="fa fa-facebook" aria-hidden="true"></i
+                ></a>
+                <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a href="#"
+                  ><i class="fa fa-dribbble" aria-hidden="true"></i
+                ></a>
+                <a href="#"><i class="fa fa-behance" aria-hidden="true"></i></a>
+                <a href="#"
+                  ><i class="fa fa-linkedin" aria-hidden="true"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navbar Area -->
+      <div class="delicious-main-menu">
+        <div class="classy-nav-container breakpoint-off">
+          <div class="container">
+            <!-- Menu -->
+            <nav
+              class="classy-navbar justify-content-between"
+              id="deliciousNav"
+            >
+              <!-- Logo -->
+              <a class="nav-brand" href="{% url 'recipes:recipe_list' %}"
+                ><img src="{% static 'img/core-img/logo.png' %}" alt=""
+              /></a>
+
+              <!-- Navbar Toggler -->
+              <div class="classy-navbar-toggler">
+                <span class="navbarToggler"
+                  ><span></span><span></span><span></span
+                ></span>
+              </div>
+
+              <!-- Menu -->
+              <div class="classy-menu">
+                <!-- close btn -->
+                <div class="classycloseIcon">
+                  <div class="cross-wrap">
+                    <span class="top"></span><span class="bottom"></span>
+                  </div>
+                </div>
+
+                <!-- Nav Start -->
+                <div class="classynav">
+                  <ul>
+                    <li class="{% active_nav request 'recipes:recipe_list' %}">
+                      <a href="{% url 'recipes:recipe_list' %}">Home</a>
+                    </li>
+                    <li><a href="{% url 'recipes:blog_list' %}">Blog Post</a></li>
+                    <li><a href="{% url 'recipes:recipes_list' %}">Recipe Post</a></li>
+                    <li><a href="{% url 'recipes:about' %}">About Us</a></li>
+                    <li>
+                      <a href="#">Account</a>
+                      <ul class="dropdown">
+                        {% if user.is_authenticated %}
+                        <li>
+                          <a href="{% url 'account_logout' %}">Logout</a>
+                        </li>
+                        {% else %}
+                        <li>
+                          <a href="{% url 'account_login' %}">Login</a>
+                        </li>
+                        <li>
+                          <a href="{% url 'account_signup' %}">Sign Up</a>
+                        </li>
+                        {% endif %}
+                      </ul>
+                    </li>
+                  </ul>
+
+                  <!-- Newsletter Form -->
+                  <div class="search-btn">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </div>
+                </div>
+                <!-- Nav End -->
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- ##### Header Area End ##### -->
+    
+    <main>
+      {% block content %} {% endblock content %}
+    </main>
+
+    <!-- ##### Follow Us Instagram Area Start ##### -->
+    <div class="follow-us-instagram">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <h5>Follow Us Instragram</h5>
+          </div>
+        </div>
+      </div>
+      <!-- Instagram Feeds -->
+      <div class="insta-feeds d-flex flex-wrap">
+        <!-- Single Insta Feeds -->
+        <div class="single-insta-feeds">
+          <img src="{% static 'img/bg-img/insta1.jpg' %}" alt="" />
+          <!-- Icon -->
+          <div class="insta-icon">
+            <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <!-- Single Insta Feeds -->
+        <div class="single-insta-feeds">
+          <img src="{% static 'img/bg-img/insta2.jpg' %}" alt="" />
+          <!-- Icon -->
+          <div class="insta-icon">
+            <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <!-- Single Insta Feeds -->
+        <div class="single-insta-feeds">
+          <img src="{% static 'img/bg-img/insta3.jpg' %}" alt="" />
+          <!-- Icon -->
+          <div class="insta-icon">
+            <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <!-- Single Insta Feeds -->
+        <div class="single-insta-feeds">
+          <img src="{% static 'img/bg-img/insta4.jpg' %}" alt="" />
+          <!-- Icon -->
+          <div class="insta-icon">
+            <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <!-- Single Insta Feeds -->
+        <div class="single-insta-feeds">
+          <img src="{% static 'img/bg-img/insta5.jpg' %}" alt="" />
+          <!-- Icon -->
+          <div class="insta-icon">
+            <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <!-- Single Insta Feeds -->
+        <div class="single-insta-feeds">
+          <img src="{% static 'img/bg-img/insta6.jpg' %}" alt="" />
+          <!-- Icon -->
+          <div class="insta-icon">
+            <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+          </div>
+        </div>
+
+        <!-- Single Insta Feeds -->
+        <div class="single-insta-feeds">
+          <img src="{% static 'img/bg-img/insta7.jpg' %}" alt="" />
+          <!-- Icon -->
+          <div class="insta-icon">
+            <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ##### Follow Us Instagram Area End ##### -->
+    
+    <!-- ##### Footer Area Start ##### -->
+    <footer class="footer-area">
+      <div class="container h-100">
+        <div class="row h-100">
+          <div
+            class="col-12 h-100 d-flex flex-wrap align-items-center justify-content-between"
+          >
+            <!-- Footer Social Info -->
+            <div class="footer-social-info text-right">
+              <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+              <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+              <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+              <a href="#"><i class="fa fa-dribbble" aria-hidden="true"></i></a>
+              <a href="#"><i class="fa fa-behance" aria-hidden="true"></i></a>
+              <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+            </div>
+            <!-- Footer Logo -->
+            <div class="footer-logo">
+              <a href="{% url 'recipes:recipe_list' %}"
+                ><img src="{% static 'img/core-img/logo.png' %}" alt=""
+              /></a>
+            </div>
+            <!-- Copywrite -->
+            <p>
+              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+              Copyright &copy;
+              <script>
+                document.write(new Date().getFullYear());
+              </script>
+              All rights reserved | This template is made with
+              <i class="fa fa-heart-o" aria-hidden="true"></i> by
+              <a href="https://colorlib.com" target="_blank">Colorlib</a>
+              <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- ##### Footer Area Start ##### -->
+    
+    <!-- ##### All Javascript Files ##### -->
+    {% block extra_js %}{% endblock extra_js %}
+    <!-- jQuery-2.2.4 js -->
+    <script src="{% static 'js/jquery/jquery-2.2.4.min.js' %}"></script>
+    <!-- Popper js -->
+    <script src="{% static 'js/bootstrap/popper.min.js' %}"></script>
+    <!-- Bootstrap js -->
+    <script src="{% static 'js/bootstrap/bootstrap.min.js' %}"></script>
+    <!-- All Plugins js -->
+    <script src="{% static 'js/plugins/plugins.js' %}"></script>
+    <!-- Active js -->
+    <script src="{% static 'js/active.js' %}"></script>
+  </body>
+</html>

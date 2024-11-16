@@ -1,0 +1,215 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/breadcumb3.jpg' %});">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h2>Recipe</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
+
+<div class="receipe-post-area section-padding-80">
+
+  <!-- Receipe Post Search -->
+  <div class="receipe-post-search mb-80">
+      <div class="container">
+          <form action="{% url 'recipes:recipes_list' %}" method="get">
+              <div class="row align-items-end">
+                  <div class="col-12 col-md-4 col-lg-3 mb-3 mb-md-0">
+                      <select name="category" id="select1" class="form-control">
+                          <option value="">All Categories</option>
+                          {% for category in categories %}
+                          <option value="{{ category.id }}" {% if category.id == selected_category %}selected{% endif %}>{{ category.name }}</option>
+                          {% endfor %}
+                      </select>
+                  </div>
+                  <div class="col-12 col-md-4 col-lg-4 mb-3 mb-md-0">
+                      <input type="search" name="q" placeholder="Search Recipes" class="form-control">
+                  </div>
+                  <div class="col-12 col-md-2 col-lg-2 text-md-right mb-3 mb-md-0">
+                      <button type="submit" class="btn delicious-btn btn-block">Search</button>
+                  </div>
+                  <div class="col-12 col-md-2 col-lg-3">
+                    <button type="button" class="btn delicious-btn btn-block">
+                      <a href="{% url 'recipes:recipe_create' %}" style='color:white;'>Post Recipe</a>
+                    </button>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
+
+</div>
+
+
+<!--<div class="receipe-post-area section-padding-80">
+
+    
+    <div class="receipe-post-search mb-80">
+        <div class="container">
+            <form action="{% url 'recipes:recipes_list' %}" method="get">
+                <div class="row">
+                    <div class="col-12 col-lg-3">
+                        <select name="category" id="select1">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category.id == selected_category %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <input type="search" name="q" placeholder="Search Recepies">
+                    </div>
+                    <div class="col-12 col-lg-3 col-sm-6 text-right">
+                        <button type="submit" class="btn delicious-btn">Search</button>
+                    </div>
+                    <div class="col-12 col-lg-3 col-sm-6">
+                      <button type='button' class='btn delicious-btn'><a href="{% url 'recipes:recipe_create' %}" style='color:white;'>Post Recipe</a></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>-->
+
+<!-- ##### Best Receipe Area Start ##### -->
+<section class="best-receipe-area">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="section-heading">
+            <h3>The Recipes</h3>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row">
+        {% if not query %}
+        {% for recipe in recipes %}
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="single-best-receipe-area mb-30">
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" />
+            <div class="receipe-content">
+              <a href="{% url 'recipes:recipe_detail' recipe.pk %}">
+                <h5>{{ recipe.title }}</h5>
+              </a>
+              <div class="ratings">
+                {% for i in "12345" %} 
+                {% if forloop.counter <= recipe.average_rating %}
+                <i class="fa fa-star" aria-hidden="true"></i>
+                {% else %}
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+                {% endif %} 
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% elif query %}
+        {% for recipe in recipes %}
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="single-best-receipe-area mb-30">
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" />
+            <div class="receipe-content">
+              <a href="{% url 'recipes:recipe_detail' recipe.pk %}">
+                <h5>{{ recipe.title }}</h5>
+              </a>
+              <div class="ratings">
+                {% for i in "12345" %} 
+                {% if forloop.counter <= recipe.average_rating %}
+                <i class="fa fa-star" aria-hidden="true"></i>
+                {% else %}
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+                {% endif %} 
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% if query_search %}
+        {% for recipe in recipes_search %}
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="single-best-receipe-area mb-30">
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" />
+            <div class="receipe-content">
+              <a href="{% url 'recipes:recipe_detail' recipe.pk %}">
+                <h5>{{ recipe.title }}</h5>
+              </a>
+              <div class="ratings">
+                {% for i in "12345" %} 
+                {% if forloop.counter <= recipe.average_rating %}
+                <i class="fa fa-star" aria-hidden="true"></i>
+                {% else %}
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+                {% endif %} 
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+</section>
+<!-- ##### Best Receipe Area End ##### -->
+
+<!--Pagination-->
+<!--<div class="pagination">
+    <span class="step-links">
+        {% if recipes.has_previous %}
+            <a href="?page=1{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">&laquo; first</a>
+            <a href="?page={{ recipes.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">previous</a>
+        {% endif %}
+
+        {% if recipes.has_next %}
+            <a href="?page={{ recipes.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">next</a>
+            <a href="?page={{ recipes.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>-->
+
+<div class="container my-2">
+  <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+          {% if recipes.has_previous %}
+              <li class="page-item">
+                  <a class="page-link" href="?page={{ recipes.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                      <span class="sr-only">Previous</span>
+                  </a>
+              </li>
+          {% endif %}
+
+          {% for i in recipes.paginator.page_range %}
+              <li class="page-item {% if recipes.number == i %}active{% endif %}">
+                  <a class="page-link" href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">{{ i }}</a>
+              </li>
+          {% endfor %}
+
+          {% if recipes.has_next %}
+              <li class="page-item">
+                  <a class="page-link" href="?page={{ recipes.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                      <span class="sr-only">Next</span>
+                  </a>
+              </li>
+          {% endif %}
+      </ul>
+  </nav>
+</div>
+
+{% endblock content %}

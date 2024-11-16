@@ -1,0 +1,172 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+
+{% block title %}About Us{% endblock title %}
+
+{% block content %}
+ <!-- ##### Breadcumb Area Start ##### -->
+ <div class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/breadcumb1.jpg' %});">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h2>About us</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
+
+<!-- ##### About Area Start ##### -->
+<section class="about-area section-padding-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h3>Who we are and what we do?</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h6 class="sub-heading pb-5">We are passionate about sharing the best recipes from around the world. Our goal is to inspire home cooks to create delicious meals with ease and confidence.</h6>
+
+                <p class="text-center">Welcome to our recipe website where you'll discover a treasure trove of culinary delights. Whether you're a seasoned chef or just starting out, we provide step-by-step guides and tips to help you master the art of cooking. From appetizers to desserts, explore a diverse range of recipes that cater to all taste buds. Join us on this flavorful journey and let's make every meal a memorable one.</p>
+            </div>
+        </div>
+
+        <div class="row align-items-center mt-70">
+            <!-- Single Cool Fact -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="single-cool-fact">
+                    <img src="{% static 'img/core-img/salad.png' %}" alt="">
+                    <h3><span class="counter">1287</span></h3>
+                    <h6>Amazing receipies</h6>
+                </div>
+            </div>
+
+            <!-- Single Cool Fact -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="single-cool-fact">
+                    <img src="{% static 'img/core-img/hamburger.png' %}" alt="">
+                    <h3><span class="counter">25</span></h3>
+                    <h6>Burger receipies</h6>
+                </div>
+            </div>
+
+            <!-- Single Cool Fact -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="single-cool-fact">
+                    <img src="{% static 'img/core-img/rib.png' %}" alt="">
+                    <h3><span class="counter">471</span></h3>
+                    <h6>Meat receipies</h6>
+                </div>
+            </div>
+
+            <!-- Single Cool Fact -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="single-cool-fact">
+                    <img src="{% static 'img/core-img/pancake.png' %}" alt="">
+                    <h3><span class="counter">326</span></h3>
+                    <h6>Desert receipies</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <img class="mb-70" src="{% static 'img/bg-img/about.png' %}" alt="">
+                <p class="text-center">We are a team of food enthusiasts who are passionate about sharing delicious recipes with the world. Our mission is to provide a platform where home cooks can explore a diverse range of recipes, learn new techniques, and share their love for food with others. We believe that food has the power to bring people together and create lasting memories. With this in mind, we have curated a collection of recipes that cater to all tastes and dietary needs. We hope you enjoy exploring our website and discover new recipes to try in the kitchen!</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### About Area End ##### -->
+
+<!-- ##### Contact Area Start ##### -->
+<div class="contact-area section-padding-0-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="section-heading">
+                    <h3>Contact Us</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <!-- Display messages as Bootstrap alerts -->
+                {% if messages %}
+                <div class="alert-messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+        
+                <div class="contact-form-area">
+                    <form id="contactForm" action="{% url 'recipes:about' %}" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{ form.name.value|default_if_none:'' }}">
+                                {% if form.name.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.name.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="E-mail" value="{{ form.email.value|default_if_none:'' }}">
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" value="{{ form.subject.value|default_if_none:'' }}">
+                                {% if form.subject.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.subject.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <textarea name="message" class="form-control" id="message" cols="30" rows="10" placeholder="Message">{{ form.message.value|default_if_none:'' }}</textarea>
+                                {% if form.message.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.message.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 text-center">
+                                <button class="btn delicious-btn mt-30" type="submit">Send</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<!-- ##### Contact Area End ##### -->
+{% endblock content %}
+

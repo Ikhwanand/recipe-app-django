@@ -1,0 +1,143 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+
+{% block title %}Blog Post{% endblock title %}
+
+{% block content %}
+
+<!-- ##### Breadcumb Area Start ##### -->
+<div class="breadcumb-area bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/breadcumb2.jpg' %});">
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-12">
+                <div class="breadcumb-text text-center">
+                    <h2>Blog</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Breadcumb Area End ##### -->
+
+<!-- ##### Blog Area Start ##### -->
+<div class="blog-area section-padding-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="blog-posts-area">
+
+                    {% for blog in blog_posts %}
+                    <!-- Single Blog Area -->
+                    <div class="single-blog-area mb-80">
+                        <!-- Thumbnail -->
+                        <div class="blog-thumbnail">
+                            <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+                            <!-- Post Date -->
+                            <div class="post-date">
+                                <a href="#"><span>{{ blog.created_at|date:"d" }}</span>{{ blog.created_at|date:"M" }} <br> {{ blog.created_at|date:"Y" }}</a>
+                            </div>
+                        </div>
+                        <!-- Content -->
+                        <div class="blog-content">
+                            <a href="{% url 'recipes:blog_detail' blog.pk %}" class="post-title">{{ blog.title }}</a>
+                            <div class="meta-data">
+                                <p> by: {{ blog.author }}</p>
+                            </div>
+                            <p class='text-truncate'>{{ blog.content }}</p>
+                            <a href="{% url 'recipes:blog_detail' blog.pk %}" class="btn delicious-btn mt-30">Read More</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+
+                </div>
+
+                <nav aria-label="Page navigation example">
+                    {% if blog_posts.has_other_pages %}
+                    <ul class="pagination">
+                        {% if blog_posts.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ blog_posts.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Previous</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                        {% endif %}
+
+                        {% for i in blog_posts.paginator.page_range %}
+                        {% if blog_posts.number == i %}
+                        <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if blog_posts.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ blog_posts.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}">Next</a></li>
+                        {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                        {% endif %}
+                    </ul>
+                    {% endif %}
+                </nav>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="blog-sidebar-area">
+                    
+                    {% if user.is_authenticated %}
+                    <!-- Widget -->
+                    <div class="single-widget mb-80">
+                        <h6>Blog</h6>
+                        <button type="button" class="btn delicious-btn">
+                            <a href="{% url 'recipes:blog_create' %}" style='color:white;'>Create Blog</a>
+                        </button>
+                    </div>
+                    {% endif %}
+
+                    <!-- Widget -->
+                    {% if categories %}
+                    <div class="single-widget mb-80">
+                        <h6>Categories</h6>
+                        <ul class='list'>
+                            <li><a href="{% url 'recipes:blog_list' %}">All Categories</a></li>
+                            {% for category in categories %}
+                            <li><a href="?category={{ category.pk }}">{{ category.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- Widget -->
+                    <div class="single-widget mb-80">
+                        <h6>Newsletter</h6>
+
+                        <!-- Form -->
+                        <div class="newsletter-form bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/bg1.jpg' %});">
+                            <form action="{% url 'recipes:blog_list' %}" method="post">
+                                {% csrf_token %}
+                                <input type="email" name="email" placeholder="Subscribe to newsletter">
+                                <button type="submit" class="btn delicious-btn w-100">Subscribe</button>
+                            </form>
+                            <p>Delicious is a website that provides a variety of food recipes. You can search, create and share your own recipes with others. Explore new recipes and enjoy cooking!</p>
+                        </div>
+                    </div>
+
+                    <!-- Widget -->
+                    <div class="single-widget mb-80">
+                        <div class="quote-area text-center">
+                            <span>"</span>
+                            <h4>Nothing is better than going home to family and eating good food and relaxing</h4>
+                            <p>John Smith</p>
+                            <div class="date-comments d-flex justify-content-between">
+                                <div class="date">January 04, 2018</div>
+                                <div class="comments">2 Comments</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Blog Area End ##### -->
+{% endblock content %}
+

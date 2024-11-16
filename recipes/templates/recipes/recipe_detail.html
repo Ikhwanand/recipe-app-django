@@ -1,0 +1,270 @@
+{% extends "recipes/base.html" %} 
+{% load static %} 
+{% load custom_filter %} 
+
+
+{%block content %}
+
+<!-- Receipe Slider -->
+{% if recipe.image %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class='img-fluid mx-auto d-block' />
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if recipe.author == request.user %}
+<div class="container pt-2">
+  <button type="button" class='btn btn-primary btn-sm'>
+    <a href="{% url 'recipes:recipe_update' recipe.pk %}" style='color:white;'>Update Recipe</a>
+  </button>
+  <form
+    action="{% url 'recipes:recipe_delete' recipe.pk %}"
+    method="post"
+    style="display: inline"
+  >
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger btn-sm">Delete Recipe</button>
+  </form>
+
+</div>
+{% endif %}
+
+<!-- Receipe Content Area -->
+<div class="receipe-content-area">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-8">
+        <div class="receipe-headline my-5">
+          <span>{{ recipe.created_at|date:"F d, Y" }}</span>
+          <h2>{{ recipe.title }}</h2>
+        </div>
+        <div class="my-7 pb-5">
+          <p>Author: {{ recipe.author }}</p>
+          <p>Category: 
+            <span>{{ recipe.category }}</span>
+          </p>
+        </div>
+      </div>
+
+      
+      {% if ratings %}
+      <div class="col-12 col-md-4">
+        <div class="receipe-ratings text-right my-5">
+          <h6 class='ratings pr-5 mb-2'>Ratings</h6>
+          <div class="ratings pr-2">
+            {% for i in "12345" %} 
+            {% if forloop.counter <= recipe.average_rating %}
+              <i class="fa fa-star" aria-hidden="true" style='color:gold;'></i>
+            {% else %}
+              <i class="fa fa-star-o" aria-hidden="true" style='color:gold;'></i>
+            {% endif %} 
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="row">
+      <div class="col-12 col-lg-8">
+        <h4>Instructions</h4>
+        {% for step_number, step in recipe.get_instructions|enumerated %}
+        <!-- Single Preparation Step -->
+        <div class="single-preparation-step d-flex">
+          <h4>{{ step_number|add:1 }}.</h4>
+          <p>
+            {{ step }}
+          </p>
+        </div>
+        {% empty %}
+        <div class="single-preparation-step d-flex">
+          <h4>No steps available.</h4>
+          <p>This recipe does not have any steps yet.</p>
+        </div>
+        {% endfor %}
+        
+  
+      </div>
+
+      <!-- Ingredients -->
+      <div class="col-12 col-lg-4">
+        <div class="ingredients">
+          <h4>Ingredients</h4>
+          {% for step, ingredient in recipe.get_ingredients|enumerated %}
+          <!-- Custom Checkbox -->
+          <div class="custom-control custom-checkbox">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              id="customCheck{{ step }}"
+            />
+            <label class="custom-control-label" for="customCheck{{ step }}">{{ ingredient }}</label>
+          </div>
+          {% endfor %}
+          
+        </div>
+      </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="row">
+      <div class="col-12">
+        <div class="section-heading text-left">
+          <h3>Leave a comment</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="contact-form-area">
+          <form action="{% url 'recipes:recipe_detail' recipe.pk %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12 col-lg-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name='comment_form-name'
+                  placeholder="Name"
+                />
+              </div>
+              <div class="col-12 col-lg-6">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name='comment_form-email'
+                  placeholder="E-mail"
+                />
+              </div>
+              <div class="col-12">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="subject"
+                  name='comment_form-subject'
+                  placeholder="Subject"
+                />
+              </div>
+              <div class="col-12">
+                <textarea
+                  name="comment_form-message"
+                  class="form-control"
+                  id="message"
+                  cols="30"
+                  rows="10"
+                  placeholder="Message"
+                ></textarea>
+              </div>
+              <div class="col-12">
+                <span class='ratings text-center'>Rating:</span>
+                <div class="receipe-ratings text-left my-2">
+                  <div class="ratings" id="star-rating">
+                    <i class="fa fa-star" data-rating="1"></i>
+                    <i class="fa fa-star" data-rating="2"></i>
+                    <i class="fa fa-star" data-rating="3"></i>
+                    <i class="fa fa-star" data-rating="4"></i>
+                    <i class="fa fa-star" data-rating="5"></i>
+                  </div>
+                  <input type="hidden" name="rating_form-rating" value="true" />
+                  <input type="hidden" name="rating_form-rating" id="rating-value" value="0" />
+                </div>
+              </div>
+              <div class="col-12">
+                <button class="btn delicious-btn mt-30" type="submit">
+                  Post Comments
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!--Comment show section-->
+{% if comments %}
+<section style="background-color: #f7f6f6;">
+  <div class="container my-5 py-5 text-body">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-12 col-lg-10 col-xl-8" data-spy="scroll" data-target="#comments-list" data-offset="0" style="max-height: 500px; overflow-y: auto;">
+        <div id="comments-list" class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="text-body mb-0 center">Comments</h4>
+        </div>
+        <hr>
+
+        {% for comment in comments %}
+        <div class="card mb-3">
+          <div class="d-flex flex-column comment-section">
+            <div class="bg-white p-2">
+              <div class="d-flex flex-row user-info">
+                <div class="d-flex flex-column justify-content-start ml-2">
+                  <span class="d-block font-weight-bold name">{{ comment.name}}</span>
+                  <span class="date text-black-50">{{ comment.created_at|date:"F d, Y"}}</span>
+                  {% if ratings %}
+                  <span class="d-block font-weight-bold name">
+                    {% for i in "12345" %} 
+                    {% if forloop.counter <= recipe.average_rating %}
+                      <i class="fa fa-star" aria-hidden="true" style='color:gold;'></i>
+                    {% else %}
+                      <i class="fa fa-star-o" aria-hidden="true" style='color:gold;'></i>
+                    {% endif %} 
+                    {% endfor %}
+                  </span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="mt-2 pl-2">
+                <span class="comment-subject">{{ comment.subject }}</span>
+                <p class="comment-text">{{ comment.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+<div class="container my-2">
+  <button type="button" class="btn delicious-btn">
+    <a href="{% url 'recipes:recipes_list' %}" style='color:white;'>Back to Recipes List</a>
+  </button>
+</div>
+{% endblock %} 
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const stars = document.querySelectorAll("#star-rating .fa-star");
+    const ratingValue = document.getElementById("rating-value");
+    const submitRating = document.getElementById("submit-rating");
+
+    stars.forEach((star) => {
+      star.addEventListener("click", function () {
+        const rating = this.getAttribute("data-rating");
+        ratingValue.value = rating;
+        stars.forEach((s) => s.classList.remove("fa-star", "fa-star-o"));
+        for (let i = 0; i < rating; i++) {
+          stars[i].classList.add("fa-star");
+        }
+        for (let i = rating; i < stars.length; i++) {
+          stars[i].classList.add("fa-star-o");
+        }
+        submitRating.disabled = false;
+      });
+    });
+  });
+
+</script>
+{% endblock %}

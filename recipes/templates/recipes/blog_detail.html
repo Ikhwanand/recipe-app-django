@@ -1,0 +1,63 @@
+{% extends "recipes/base.html" %} 
+
+{% load static %} 
+
+{% block content %}
+
+{% if blog_post.image %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <img src="{{ blog_post.image.url }}" alt="{{ blog_post.title }}" class='img-fluid mx-auto d-block' />
+    </div>
+  </div>
+</div>
+{% endif %}
+<!-- Receipe Content Area -->
+<div class="receipe-content-area">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-8">
+        <div class="receipe-headline my-5">
+          <span>{{ blog_post.created_at|date:"F d, Y" }}</span>
+          <h2>{{ blog_post.title }}</h2>
+        </div>
+        <div class="my-7 pb-5">
+          <p>Author: {{ blog_post.author }}</p>
+          <p>
+            Category:
+            <span>{{ blog_post.category }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12 col-lg-8 my-2">
+        <div class="single-preparation-step d-flex">
+          <p>{{ blog_post.content }}</p>
+        </div>
+        <button type="button" class="btn delicious-btn"><a href="{% url 'recipes:blog_list' %}" style='color:white;'>Back to Blog List</a></button>
+      </div>
+    </div>
+  </div>
+
+  {% if recipe.author == request.user %}
+  <div class="container pt-2">
+    <button type="button" class="btn btn-primary btn-sm">
+      <a href="{% url 'recipes:recipe_update' recipe.pk %}" style="color: white"
+        >Update Recipe</a
+      >
+    </button>
+    <form
+      action="{% url 'recipes:recipe_delete' recipe.pk %}"
+      method="post"
+      style="display: inline"
+    >
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger btn-sm">Delete Recipe</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock content %}

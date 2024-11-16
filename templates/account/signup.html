@@ -1,0 +1,68 @@
+{% extends "recipes/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Sign Up" %}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">{% trans "Sign Up" %}</h4>
+                </div>
+                <div class="card-body">
+                    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="id_username">{% trans "Username" %}</label>
+                            <input type="text" name="username" placeholder="Username" class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                                   id="id_username" value="{{ form.username.value|default_if_none:'' }}">
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback">{{ form.username.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_email">{% trans "Email" %}</label>
+                            <input type="email" name="email" placeholder="Email" class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                                   id="id_email" value="{{ form.email.value|default_if_none:'' }}">
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback">{{ form.email.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_password1">{% trans "Password" %}</label>
+                            <input type="password" name="password1" placeholder="Password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                                   id="id_password1">
+                            {% if form.password1.errors %}
+                                <div class="invalid-feedback">{{ form.password1.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_password2">{% trans "Confirm Password" %}</label>
+                            <input type="password" name="password2" placeholder="Confirm Password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                                   id="id_password2">
+                            {% if form.password2.errors %}
+                                <div class="invalid-feedback">{{ form.password2.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-primary">{% trans "Sign Up" %}</button>
+                            <a href="{% url 'account_login' %}" class="btn btn-link">{% trans "Already have an account?" %}</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
