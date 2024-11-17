@@ -154,6 +154,13 @@
                         {% endif %}
                       </ul>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li>
+                      <a href="{% url 'chatbot:chat' %}">
+                        <i class="fas fa-robot"></i> Recipe Assistant
+                      </a>
+                    </li>
+                    {% endif %}
                   </ul>
 
                   <!-- Newsletter Form -->

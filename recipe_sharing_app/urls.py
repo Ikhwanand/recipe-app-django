@@ -29,6 +29,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
     path('accounts/change-username/', views.ChangeUsername.as_view(), name='account_change_username'),
+    path('chatbot/', include('chatbot.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

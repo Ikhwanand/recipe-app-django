@@ -28,7 +28,7 @@
                     {% if form.non_field_errors %}
                         {{ form.non_field_errors|join:", " }}
                     {% else %}
-                        Please check your username and password and try again.
+                        Please check your credentials and try again.
                     {% endif %}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -37,6 +37,19 @@
                 {% endif %}
 
                 <div class="contact-form-area">
+                    {% get_providers as socialaccount_providers %}
+                    {% if socialaccount_providers %}
+                    <div class="text-center mb-4">
+                        <a href="{% provider_login_url 'google' %}" class="btn delicious-btn w-100">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo" style="height: 20px; margin-right: 10px; filter: brightness(0) invert(1);">
+                            {% trans "Sign in with Google" %}
+                        </a>
+                        <div class="my-4">
+                            <span class="text-muted">{% trans "or" %}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+
                     <form class="login" method="POST" action="{% url 'account_login' %}">
                         {% csrf_token %}
                         
@@ -48,6 +61,7 @@
                                     <div class="invalid-feedback">{{ form.login.errors|join:", " }}</div>
                                 {% endif %}
                             </div>
+                            
                             <div class="col-12">
                                 <input type="password" name="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
                                        id="id_password" placeholder="Password">
@@ -55,15 +69,18 @@
                                     <div class="invalid-feedback">{{ form.password.errors|join:", " }}</div>
                                 {% endif %}
                             </div>
-                            {% if redirect_field_value %}
-                                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                            {% endif %}
+
                             <div class="col-12">
                                 <div class="custom-control custom-checkbox mb-3">
                                     <input type="checkbox" name="remember" id="id_remember" class="custom-control-input">
                                     <label class="custom-control-label" for="id_remember">{% trans "Remember Me" %}</label>
                                 </div>
                             </div>
+
+                            {% if redirect_field_value %}
+                                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                            {% endif %}
+
                             <div class="col-12 text-center">
                                 <button class="btn delicious-btn mt-30" type="submit">{% trans "Sign In" %}</button>
                             </div>
@@ -71,22 +88,9 @@
                     </form>
 
                     <div class="text-center mt-4">
-                        <a href="{% url 'account_reset_password' %}" class="text-muted">{% trans "Forgot Password?" %}</a>
-                        <p class="mt-3">{% trans "Don't have an account?" %} <a href="{{ signup_url }}">{% trans "Sign Up" %}</a></p>
+                        <p><a href="{% url 'account_reset_password' %}" class="text-muted">{% trans "Forgot Password?" %}</a></p>
+                        <p>{% trans "Don't have an account?" %} <a href="{{ signup_url }}">{% trans "Sign Up" %}</a></p>
                     </div>
-
-                    {% get_providers as socialaccount_providers %}
-                    {% if socialaccount_providers %}
-                    <div class="text-center mt-4">
-                        <p class="text-muted">{% trans 'Or sign in with:' %}</p>
-                        <div class="socialaccount_ballot">
-                            <ul class="socialaccount_providers list-inline">
-                                {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-                            </ul>
-                        </div>
-                        {% include "socialaccount/snippets/login_extra.html" %}
-                    </div>
-                    {% endif %}
                 </div>
             </div>
         </div>

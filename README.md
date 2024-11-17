@@ -170,6 +170,32 @@ Key settings can be modified in:
 - `urls.py` for URL routing
 - Template files for layout
 
+## AI-Powered Recipe Assistant
+
+The application includes an intelligent chatbot (Chef AI) that helps users with recipe recommendations and cooking advice. The chatbot uses the Phi-3-mini-4k-instruct model from Azure ML for natural language processing.
+
+### Setting up the Chatbot
+
+1. Get the API Key:
+   - Visit [Phi-3-mini-4k-instruct Model](https://github.com/marketplace/models/azureml/Phi-3-mini-4k-instruct)
+   - Generate your GitHub token with appropriate permissions
+   - Add the token to your `.env` file:
+     ```
+     GITHUB_TOKEN=your_token_here
+     ```
+
+2. Install Required Packages:
+   ```bash
+   pip install azure-ai-inference azure-core
+   ```
+
+3. Features:
+   - Personalized recipe recommendations
+   - Cooking tips and advice
+   - Ingredient-based recipe search
+   - Difficulty and cooking time information
+   - Multi-turn conversations
+
 ## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -196,4 +222,4 @@ Project Link: [https://github.com/yourusername/recipe-app-django]
 - All contributors
 
 ---
-Made with ❤️ by [Your Name]
+Made with ❤️ by ikhwanand

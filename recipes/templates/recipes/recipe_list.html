@@ -13,9 +13,11 @@
         </div>
         <div class="col-md-4 text-md-right">
             {% if user.is_authenticated %}
-                <a href="{% url 'recipes:recipe_create' %}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Create Recipe
-                </a>
+                <button type="button" class="btn btn-primary">
+                    <a href="{% url 'recipes:recipe_create' %}" style='color:white;'>
+                        <i class="fas fa-plus"></i> Create Recipe
+                    </a>
+                </button>
             {% endif %}
         </div>
     </div>
@@ -27,13 +29,12 @@
                 <div class="card-body">
                     <h5 class="card-title mb-3">Categories</h5>
                     <div class="d-flex flex-wrap gap-2">
-                        <a href="{% url 'recipes:recipe_list' %}" 
-                           class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %} mr-2 mb-2">
-                            All Recipes
-                        </a>
+                            <a href="{% url 'recipes:recipe_list' %}" class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %} mr-2 mb-2">
+                                All Recipes
+                            </a>
+                       
                         {% for category in categories %}
-                            <a href="{% url 'recipes:recipe_list' %}?category={{ category.slug }}" 
-                               class="btn btn-sm {% if selected_category == category.slug %}btn-primary{% else %}btn-outline-primary{% endif %} mr-2 mb-2">
+                            <a href="{% url 'recipes:recipe_list' %}?category={{ category.slug }}" class="btn btn-sm {% if selected_category == category.slug %}btn-primary{% else %}btn-outline-primary{% endif %} mr-2 mb-2">
                                 {{ category.name }}
                             </a>
                         {% endfor %}
@@ -57,9 +58,11 @@
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">
-                            <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="text-decoration-none">
-                                {{ recipe.title }}
-                            </a>
+                            <button type="button" class="btn btn-link p-0">
+                                <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="text-primary text-decoration-none">
+                                    {{ recipe.title }}
+                                </a>
+                            </button>
                         </h5>
                         <p class="card-text text-muted">
                             <small>
@@ -107,31 +110,37 @@
             <ul class="pagination justify-content-center">
                 {% if recipes.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ recipes.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
-                            Previous
-                        </a>
+                        <button type="button" class="btn btn-link p-0">
+                            <a class="page-link" href="?page={{ recipes.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </button>
                     </li>
                 {% endif %}
 
                 {% for num in recipes.paginator.page_range %}
                     {% if recipes.number == num %}
                         <li class="page-item active">
-                            <span class="page-link">{{ num }}</span>
+                            <button type="button" class="btn btn-link p-0">
+                                <a class="page-link" href="#">{{ num }}</a>
+                            </button>
                         </li>
-                    {% else %}
+                    {% elif num > recipes.number|add:'-3' and num < recipes.number|add:'3' %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
-                                {{ num }}
-                            </a>
+                            <button type="button" class="btn btn-link p-0">
+                                <a class="page-link" href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}">{{ num }}</a>
+                            </button>
                         </li>
                     {% endif %}
                 {% endfor %}
 
                 {% if recipes.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ recipes.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
-                            Next
-                        </a>
+                        <button type="button" class="btn btn-link p-0">
+                            <a class="page-link" href="?page={{ recipes.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </button>
                     </li>
                 {% endif %}
             </ul>

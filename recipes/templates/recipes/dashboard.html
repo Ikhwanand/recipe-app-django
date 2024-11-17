@@ -60,16 +60,28 @@
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Recipes</h5>
-                    <a href="{% url 'recipes:my_recipes' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <button type="button" class="btn btn-link p-0 mr-2">
+                        <a href="{% url 'recipes:recipe_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add New Recipe
+                        </a>
+                    </button>
+                    <button type="button" class="btn btn-link p-0">
+                        <a href="{% url 'recipes:my_recipes' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-list"></i> View All
+                        </a>
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="list-group list-group-flush">
                         {% for recipe in recipes %}
-                            <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">{{ recipe.title }}</h6>
-                                    <small class="text-muted">{{ recipe.created_at|date:"M j" }}</small>
-                                </div>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-link p-0">
+                                    <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="text-primary text-decoration-none">
+                                        {{ recipe.title }}
+                                    </a>
+                                </button>
+                                <br>
+                                <small class="text-muted">{{ recipe.created_at|date:"F j, Y" }}</small>
                                 <p class="mb-1 text-muted small">{{ recipe.description|truncatewords:10 }}</p>
                                 <small>
                                     {% if recipe.is_published %}
@@ -78,7 +90,7 @@
                                         <span class="badge badge-secondary">Draft</span>
                                     {% endif %}
                                 </small>
-                            </a>
+                            </div>
                         {% empty %}
                             <p class="text-muted text-center my-3">No recipes yet</p>
                         {% endfor %}
@@ -92,16 +104,23 @@
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Favorites</h5>
-                    <a href="{% url 'recipes:favorite_recipes' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <button type="button" class="btn btn-link p-0">
+                        <a href="{% url 'recipes:favorite_recipes' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-heart"></i> View All
+                        </a>
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="list-group list-group-flush">
                         {% for recipe in favorite_recipes %}
-                            <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">{{ recipe.title }}</h6>
-                                    <small class="text-muted">{{ recipe.created_at|date:"M j" }}</small>
-                                </div>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-link p-0">
+                                    <a href="{% url 'recipes:recipe_detail' recipe.slug %}" class="text-primary text-decoration-none">
+                                        {{ recipe.title }}
+                                    </a>
+                                </button>
+                                <br>
+                                <small class="text-muted">{{ recipe.created_at|date:"F j, Y" }}</small>
                                 <p class="mb-1 text-muted small">By {{ recipe.author.username }}</p>
                                 <small class="text-warning">
                                     {% with rating=recipe.average_rating %}
@@ -114,7 +133,7 @@
                                         {% endfor %}
                                     {% endwith %}
                                 </small>
-                            </a>
+                            </div>
                         {% empty %}
                             <p class="text-muted text-center my-3">No favorites yet</p>
                         {% endfor %}
@@ -135,11 +154,13 @@
                             <div class="list-group-item">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">
-                                        <a href="{% url 'recipes:recipe_detail' comment.recipe.slug %}" class="text-decoration-none">
-                                            {{ comment.recipe.title }}
-                                        </a>
+                                        <button type="button" class="btn btn-link p-0">
+                                            <a href="{% url 'recipes:recipe_detail' comment.recipe.slug %}" class="text-primary text-decoration-none">
+                                                {{ comment.recipe.title }}
+                                            </a>
+                                        </button>
                                     </h6>
-                                    <small class="text-muted">{{ comment.created_at|date:"M j" }}</small>
+                                    <small class="text-muted">{{ comment.created_at|date:"F j, Y" }}</small>
                                 </div>
                                 <p class="mb-1 small">{{ comment.message|truncatewords:15 }}</p>
                                 <small class="text-muted">By {{ comment.user.username }}</small>
@@ -164,11 +185,13 @@
                             <div class="list-group-item">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">
-                                        <a href="{% url 'recipes:recipe_detail' rating.recipe.slug %}" class="text-decoration-none">
-                                            {{ rating.recipe.title }}
-                                        </a>
+                                        <button type="button" class="btn btn-link p-0">
+                                            <a href="{% url 'recipes:recipe_detail' rating.recipe.slug %}" class="text-primary text-decoration-none">
+                                                {{ rating.recipe.title }}
+                                            </a>
+                                        </button>
                                     </h6>
-                                    <small class="text-muted">{{ rating.created_at|date:"M j" }}</small>
+                                    <small class="text-muted">{{ rating.created_at|date:"F j, Y" }}</small>
                                 </div>
                                 <p class="mb-1">
                                     <span class="text-warning">
@@ -202,24 +225,32 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'recipes:recipe_create' %}" class="btn btn-primary btn-block">
-                                <i class="fas fa-plus"></i> Create Recipe
-                            </a>
+                            <button type="button" class="btn btn-link p-0">
+                                <a href="{% url 'recipes:recipe_create' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Create Recipe
+                                </a>
+                            </button>
                         </div>
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'recipes:profile_edit' %}" class="btn btn-outline-primary btn-block">
-                                <i class="fas fa-user-edit"></i> Edit Profile
-                            </a>
+                            <button type="button" class="btn btn-link p-0">
+                                <a href="{% url 'recipes:profile_edit' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-user-edit"></i> Edit Profile
+                                </a>
+                            </button>
                         </div>
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'recipes:my_recipes' %}" class="btn btn-outline-primary btn-block">
-                                <i class="fas fa-list"></i> My Recipes
-                            </a>
+                            <button type="button" class="btn btn-link p-0">
+                                <a href="{% url 'recipes:my_recipes' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-list"></i> My Recipes
+                                </a>
+                            </button>
                         </div>
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a href="{% url 'recipes:favorite_recipes' %}" class="btn btn-outline-primary btn-block">
-                                <i class="fas fa-heart"></i> My Favorites
-                            </a>
+                            <button type="button" class="btn btn-link p-0">
+                                <a href="{% url 'recipes:favorite_recipes' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-heart"></i> My Favorites
+                                </a>
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -43,16 +43,28 @@
                         </div>
                         <!-- Content -->
                         <div class="blog-content">
-                            <a href="{% url 'recipes:blog_detail' blog.pk %}" class="post-title">{{ blog.title }}</a>
+                            
+                            <a href="{% url 'recipes:blog_detail' blog.pk %}" class="post-title">
+                                {{ blog.title }}
+                            </a>
                             <div class="meta-data">
-                                <p>by {{ blog.author.get_full_name|default:blog.author.username }}
-                                {% if blog.category %}
-                                    | <span class="badge badge-secondary">{{ blog.category.name }}</span>
-                                {% endif %}
+                                <p>
+                                    
+                                    <a href="{% url 'recipes:profile_detail' blog.author.username %}" style='text-decoration:none'>
+                                        By {{ blog.author.get_full_name|default:blog.author.username }}
+                                    </a>
+                                  
+                                    {% if blog.category %}
+                                        | <span class="badge badge-secondary">{{ blog.category.name }}</span>
+                                    {% endif %}
                                 </p>
                             </div>
                             <p>{{ blog.content|truncatewords:50 }}</p>
-                            <a href="{% url 'recipes:blog_detail' blog.pk %}" class="btn delicious-btn mt-30">Read More</a>
+                            <button type="button" class="btn delicious-btn mt-30">
+                                <a href="{% url 'recipes:blog_detail' blog.pk %}" class="text-white text-decoration-none">
+                                    Read More
+                                </a>
+                            </button>
                         </div>
                     </div>
                     {% empty %}

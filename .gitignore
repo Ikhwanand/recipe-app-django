@@ -68,6 +68,8 @@ staticfiles/
 
 recipe_sharing_app/__pycache__/
 recipes/__pycache__/
+chatbot/__pycache__/
 
 recipes/migrations/
+chatbot/migrations/
 
